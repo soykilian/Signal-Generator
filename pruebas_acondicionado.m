@@ -1,7 +1,4 @@
-
-
-%%[status,msg,msgID] = mkdir('Dataset_time');
-
+[status,msg,msgID] = mkdir('Dataset_time');
 snr = -20:2:20;
 i_train =  1400;
 i_val= 500;

@@ -15,9 +15,9 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
     % Frecuencia de muestreo en MHz
     % fs = 6500;
     fs = 2200;
-    fo = [6500 6600];
+     fo = [fs*0.03 fs*0.3];
      %fo=[fs/8,3*fs/8]; % Frecuencia de portadora (MHz)
-  %  fo = [fs*0.03, fs*0.3]; 
+    %fo = [600 800];
     
     % NLFM
     nNLFM=4;
@@ -29,16 +29,14 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
     lbl = zeros(length(SNR)*iteraciones, 6);
     
     ik = 1;
-    
+    length(SNR)
     for i=1:length(SNR)
-        
         snr_i=10^(SNR(i)/10);
-
         for k=1:iteraciones,
             
             % frecuencia de portadora aleatoria entre fo(1) y fo(2) normalizada respecto de fs
-            fo_k= (fo(1)+(fo(2)-fo(1))*rand(1))
-            fo_k = fo_k /fs
+            fo_k= (fo(1)+(fo(2)-fo(1))*rand(1));
+            fo_k = fo_k /fs;
             % fo_k= 200/fs;
             T_k = round((T(1) + (T(2) - T(1))*rand(1)))/fs;
             
@@ -54,50 +52,50 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
             % 5 - LFM tri
             % 6 - LFM esc
             % 7 - MQAM
-            
             switch tipoSig,
                 case 1, % LFM (esc)
                     
                      BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k;
-%                     %BWc_k=BWc(randsrc(1,1,[1:length(BWc)])); %Ancho de banda en MHz
-%                                        
-%                     datosSig(k,i,4)=BWc_k/fs; %Se almacena el ancho de banda de la señal LFM que se va a generar
-%                     
-%                     T_k=round(T_k*fs); %Duración del pulso en muestras
-%                     BWc_k=BWc_k/fs; %Ancho de banda normalizado de la fs
-%                     
-%                     pendiente_k=randsrc %Se elije aleaotiamente pendiente ascendente(1) o descendente(-1)
-% %                   pendiente_k=1;
-% 
-%                     cr_k=(BWc_k/T_k)*pendiente_k; %chirp rate
-%                     
-%                     [x,t,error]=lfm(1,fo_k,pAl,T_k,1,cr_k);
-%                     datosSig(k,i,5)=pendiente_k;
-%                     clas_Sig = 1;
-                    Tc_k =Tcesc(randsrc(1,1,[1:length(Tcesc)]));
-                 %  Dfc_k=Dfesc(randsrc(1,1,[1:length(Dfesc)]))*fo_k;
+                    %BWc_k=BWc(randsrc(1,1,[1:length(BWc)])); %Ancho de banda en MHz
+                                       
+                    datosSig(k,i,4)=BWc_k/fs; %Se almacena el ancho de banda de la señal LFM que se va a generar
                     
-                   T_k=T_k*fs %Duraci�n del pulso en muestras
-                     %Duraci�n del pulso en muestras
-                  % Dfc_k=Dfc_k/fs;
-                   %Ancho de banda normalizado de la fs
-                   Dfc_k= BWc_k * Tc_k/T_k
-                   T_k/Tc_k
-                   pendiente_k=randsrc(1,1,[1,-1]); 
+                    T_k=round(T_k*fs); %Duración del pulso en muestras
+                        %Ancho de banda normalizado de la fs
+                    pendiente_k=randsrc; %Se elije aleaotiamente pendiente ascendente(1) o descendente(-1)
+%                   pendiente_k=1;
 
-                   [x,t,error]=lfm_esc(1,fo_k,0,T_k,Tc_k,T_k/Tc_k,1,1,[],BWc_k,[],pendiente_k);
-                   clas_Sig = 1;
-                   subplot(2,1,2)
-                   plot(t,x);
-                case 2, % MFSK
+                    cr_k=(BWc_k/T_k)*pendiente_k; %chirp rate
                     
+                    [x,t,error]=lfm(1,fo_k,pAl,T_k,1,cr_k);
+                    datosSig(k,i,5)=pendiente_k;
+                    clas_Sig = 1;
+%                     Tc_k =Tcesc(randsrc(1,1,[1:length(Tcesc)]));
+%                  %  Dfc_k=Dfesc(randsrc(1,1,[1:length(Dfesc)]))*fo_k;
+%                     
+%                    T_k=T_k*fs %Duraci�n del pulso en muestras
+%                      %Duraci�n del pulso en muestras
+%                   % Dfc_k=Dfc_k/fs;
+%                    %Ancho de banda normalizado de la fs
+%                    Dfc_k= BWc_k * Tc_k/T_k
+%                    T_k/Tc_k
+%                    pendiente_k=randsrc(1,1,[1,-1]); 
+% 
+%                    [x,t,error]=lfm_esc(1,fo_k,0,T_k,Tc_k,T_k/Tc_k,1,1,[],BWc_k,[],pendiente_k);
+%                    clas_Sig = 1;
+%                     subplot(2,1,1)
+%                     plot(t,x);
+%                     [S1,t2,f] = tfrstft(x.',1:length(x),256);
+%                     subplot(2,1,2)
+%                     surf(t2,f(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
+%                     view(2)
+%                     title('Frequency')
+                 
+                case 2, % MFSK
                     nFSK_k=nFSK(randsrc(1,1,[1:length(nFSK)]));
                     T_k=round(T_k*fs);
-                    
                     vs_k=vsFSK(randsrc(1,1,[1:length(vsFSK)]));
                     ns_k=fs/vs_k; % Número de muestras por símbolo
-                    
-                    
                     %Df_k=(Dffsk(1)+(Dffsk(2)-Dffsk(1))*rand(1));
                     Df_k=1/ns_k;
 %                   Df_k=Dffsk(randsrc(1,1,[1:length(Dffsk)]));
@@ -126,7 +124,8 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                         [codFSK,errorC]= codigoCostas(len);
                         codFSK = codFSK(1,:);
                         numSimbolos_k=length(codFSK);
-                        T_k = round(numSimbolos_k * ns_k);
+                        ns_k = round(T_k / numSimbolos_k);
+                        Df_k=1/ns_k;
                         clas_Sig = 5;
                         end
                     end
@@ -136,22 +135,16 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     end
                     
                     %%%
-                   
                     [x,t,codigo,error]=m_fsk(1,fo_k,Df_k,ns_k,numSimbolos_k,pAl,cAl,codFSK,nFSK_k,T_k,1,faseContinua,Roff,1);
-                    
                     datosSig(k,i,4)=vs_k;
                     datosSig(k,i,5)=nFSK_k;
                     datosSig(k,i,6)=Df_k;
                     clas_Sig = 2;                    
                 case 3, % MPSK
-                    
                     nPSK_k=nPSK(randsrc(1,1,[1:length(nPSK)]));
-                    
                     T_k=round(T_k*fs);
-                    
                     vs_k=vsPSK(randsrc(1,1,[1:length(vsPSK)]));
                     ns_k=fs/vs_k; % Número de muestras por símbolo
-%                     ns_k=round(ns_k);
                     numSimbolos_k=ceil(T_k/ns_k);
 %                     roff=.5;
 %                     roff=[];
@@ -197,7 +190,7 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                                 %vs_k=vs2(ran);
                                 %ns_k=fs/vs_k;
                                 
-                                [codPSK,errorC]=codigoFrank(len);
+                                [codPSK,errorC]=codigoFrank(len_p);
                                 clas_Sig = 4;
                             case 3,
 %                                 len_p = [25, 36, 49, 64];
@@ -322,6 +315,11 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     
                     datosSig(k,i,4)=vs_k;
                     datosSig(k,i,5)=nPSK_k;
+                    [S1,t2,f] = tfrstft(x.',1:length(x),256);
+               subplot(2,1,2)
+               surf(t2,f(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
+               view(2)
+               title('Frequency') 
                                         
                 case 4, % NM
                     
@@ -331,6 +329,7 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     clas_Sig = 6;
                 
                 case 5, % LFM triangular
+                    clas_Sig = 7;
                     
                     T1_rel_k = T1_rel(randsrc(1,1,[1:length(T1_rel)]));
                     
@@ -338,13 +337,13 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     T2_k= T_k-T1_k;
                             
                     T_k = T1_k + T2_k;
-                    BWc_k=BWc(randsrc(1,1,[1:length(BWc)])); %Ancho de banda en MHz                    
+                    BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k; %Ancho de banda en MHz                    
                                      
 
                     T_k=T_k*fs;
                     T1_k=T1_k*fs; %Duraci�n del pulso en muestras
                     T2_k=T2_k*fs; %Duraci�n del pulso en muestras
-                    BWc_k=BWc_k/fs; %Ancho de banda normalizado de la fs
+                     %Ancho de banda normalizado de la fs
                     
                     pendiente_k=randsrc; %Se elije aleaotiamente pendiente ascendente(1) o descendente(-1)
                     %pendiente_k=1;
@@ -359,8 +358,15 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     end
                              
                     [x,t,error]=lfm_tr(1,fo_k,pAl,T1_k,T2_k,1,1,cr_k1,cr_k2,BWc_k,[]);
-                    clas_Sig = 7;
                     
+%                     subplot(2,1,1)
+%                     plot(t,x);
+%                     [S1,t2,f] = tfrstft(x.',1:length(x),256);
+%                     subplot(2,1,2)
+%                     surf(t2,f(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
+%                     view(2)
+%                     title('Frequency')
+%                     
 %                 case 6, % LFM esc
 %                     
 %                    Tc_k =Tcesc(randsrc(1,1,[1:length(Tcesc)]));
@@ -407,7 +413,13 @@ function [X,Y,lbl]=signal7_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
             datosSig(k,i,2)=SNR(i);
             datosSig(k,i,3)=T_k;
             datosSig(k,i,7) = fo_k;
-            
+               subplot(2,1,2)
+               plot(t,x);
+%                [S1,t2,f] = tfrstft(x.',1:length(x),256);
+%                subplot(2,1,2)
+%                surf(t2,f(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
+%                view(2)
+%                title('Frequency') 
             
           % Amplitud del ruido
            
