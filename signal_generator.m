@@ -6,7 +6,7 @@
 %
 
 
-function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc,Dfesc,vsFSK,Dffsk,nFSK,vsPSK,nPSK,pAl,cAl,cod,vsASK,vsQAM,Roff)
+function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc,Dfesc,vsFSK,Dffsk,nFSK,vsPSK,nPSK,pAl,cAl,cod,vsASK,vsQAM,Roff)
     
 
     % Crea la carpeta para almacenar los vectores de señal resultantes
@@ -28,8 +28,8 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
     kNLFM=0.015;
     clas_Sig=0;
     %Salidas:
-    X = zeros(length(SNR)*iteraciones,1024,2);
-    Xcorr = zeros(length(SNR)*iteraciones,1024,2);
+    X = zeros(length(SNR)*iteraciones,T(1),2);
+%     Xcorr = zeros(length(SNR)*iteraciones,T(1),2);
     Y = zeros(length(SNR)*iteraciones, 8);
     lbl = zeros(length(SNR)*iteraciones, 6);
    % corr = zeros(length(SNR)*iteraciones,1024,2);
@@ -128,7 +128,7 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
 %                     title('Frequency')
 %                                         
                 case 3, % MPSK
-                    nPSK_k = 1;
+                    nPSK_k = nPSK;
                     vs_k=vsPSK(randsrc(1,1,[1:length(vsPSK)]));
                     ns_k=fs/vs_k; % Número de muestras por símbolo
                     ns_k=round(ns_k);
@@ -136,6 +136,7 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
                     clas_Sig = 3;
                     errorC = 0;
                     Roff = [];
+                    codPSK=[];
                     if cAl == 0,
                         [codPSK,errorC] = codigoBarker(13); % ONLY BARKER CODE OF LENGTH 13
                         codPSK= codPSK(1,:);
@@ -147,22 +148,24 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
                         end
                     end
 %                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    [x,t,codigo,error]=m_psk(1,fo_k,ns_k,numSimbolos_k,0,cAl,codPSK,nPSK_k,T_k,1,Roff,0);
-%                     subplot(2,1,1)
-%                     plot(t,x)
-%                     title('Time Sequence')
-%                     [S1,t2,f] = tfrstft(x.',1:length(x),256);
-%                     phase = angle(S1(1:256, :));
-%                     subplot(2,1,2)
-%                     surf(t2,phase(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
-%                     view(2)
-%                     title('Phase')
+                    [x,t,codigo,error]=m_psk(1,fo_k,ns_k,numSimbolos_k,1,cAl,codPSK,nPSK_k,T_k,1,Roff,0);
+                    figure()
+                    subplot(2,1,1)
+                    plot(t,x)
+                    title('Time Sequence')
+                    [S1,t2,f] = tfrstft(x.',1:length(x),256);
+                    phase = angle(S1(1:256, :));
+                    subplot(2,1,2)
+                    surf(t2,phase(1:256),abs(S1(1:256,:)),'edgecolor', 'none')
+                    view(2)
+                    title('Phase')
                     datosSig(k,i,4)=vs_k;
                     datosSig(k,i,5)=nPSK_k;                      
                 case 4, % NM
                     T_k=round(T_k); % Longitud de bloque en muestras
                     x=exp(j*2*pi*(fo_k*(0:T_k-1)+rand(1)));
                     clas_Sig = 4;
+                    disp("TRAZA NM");
                 case 5, % LFM esc
                    ns_k = randsrc(1,1,[4, 8]);
                    Tc_k = T_k/ns_k;
@@ -230,7 +233,7 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
 %                     subplot(3,1,1)
 %                     plot(t,x)
             end
-            
+            display(fo_k)
             datosSig(k,i,1)=clas_Sig;
             datosSig(k,i,2)=SNR(i);
             datosSig(k,i,3)=T_k;
@@ -251,12 +254,12 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
            s = s(1:m_s);
 %            subplot(3,1,2)
 %            plot(0:1023, s)
-           [B, lags] = xcorr(s);
+%            [B, lags] = xcorr(s);
            I = real(s);
            Q = imag(s);
-           corr = B(1024:end);
-           Xcorr_real = real(corr);
-           Xcorr_imag = imag(corr);
+%            corr = B(1024:end);
+%            Xcorr_real = real(corr);
+%            Xcorr_imag = imag(corr);
 
            %r2 = ampR*(randn(1,T(2)-length(I)) + 1j*randn(1,T(2)-length(Q)));
            
@@ -270,8 +273,8 @@ function [X, Xcorr, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_re
 
            X(ik,:,1) = I;
            X(ik,:,2) = Q;
-           Xcorr(ik, :, 1) = Xcorr_real;
-           Xcorr(ik, :, 2)= Xcorr_imag;
+%            Xcorr(ik, :, 1) = Xcorr_real;
+%            Xcorr(ik, :, 2)= Xcorr_imag;
            out = [datosSig(k,i,1), datosSig(k,i,2), datosSig(k,i,3),datosSig(k,i,7), datosSig(k,i,4), datosSig(k,i,6)];
            
            lbl(ik,:) = out;

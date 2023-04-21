@@ -51,7 +51,8 @@ function [s,t,cod,error]=m_psk(fs,fo,ns,numSimbolos,pAl,cAl,cod,n,Tsecuencia,mue
         error=1;
         return
     end
-    
+    display("Number of phases:")
+    disp(n)
     % Número de fases de la señal M-PSK
     M=2^n;
     
@@ -112,6 +113,7 @@ function [s,t,cod,error]=m_psk(fs,fo,ns,numSimbolos,pAl,cAl,cod,n,Tsecuencia,mue
 %             c_cod=xcorr(codigo,'coeff');
 %         end
         codigo=exp(j*cod);
+        disp("Random code");
     else,
         if isempty(cod)||(length(cod)<numSimbolos),
             error=1;
@@ -128,18 +130,20 @@ function [s,t,cod,error]=m_psk(fs,fo,ns,numSimbolos,pAl,cAl,cod,n,Tsecuencia,mue
     % rectangular. Si se ha introducido algún valor de R en función
     % del parámetro fl se filtra en raíz cuadrada de coseno alzado,
     % coseno alzado o pulso gaussiano.
-
+    disp("Number of symbols:")
+    numSimbolos
     if isempty(R),
         
         codigoP=repmat(codigo,ns2,1);
 
-        %plot(codigoP)
         smpsk=reshape(codigoP,1,Ttotal);
-%         subplot(2,1,2)
-%         plot(smpsk)
-%         title('Codigo')
+        len = 1:1:length(smpsk);
+        figure()
+        plot(len, (smpsk))
+        title('Codigo')
 
-        
+
+ 
     else,
         
         codigoP=[codigo;zeros(ns2-1,numSimbolos)];
@@ -171,9 +175,9 @@ function [s,t,cod,error]=m_psk(fs,fo,ns,numSimbolos,pAl,cAl,cod,n,Tsecuencia,mue
     t=0:Ts:(Tsecuencia-1)*Ts;
     
     % Normalizamos la potencia
-    
-    potS=sum(abs(s).^2)/length(s);
-    s=s/sqrt(potS);  
+%     
+%     potS=sum(abs(s).^2)/length(s);
+%     s=s/sqrt(potS);  
     
     %Desajuste en amplitud y fase
     %I = real(s);
