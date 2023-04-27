@@ -16,6 +16,7 @@ numSimbolos_k=ceil(T_k/ns_k);
 fo_k = 0.25;
 Roff = [];
 codPSK=[];
+
 %%
 ns= ns_k;
 [p,q]=rat(ns_k);
@@ -28,27 +29,21 @@ cod=(2*pi/M)*floor((M-1e-12)*rand(1,numSimbolos_k));
 dCod=diff(cod);
 T_total= numSimbolos_k*ns2;
 while (length(find(dCod~=0))<2)||(min(diff(find(dCod~=0)))>1)||(min(abs(dCod(dCod~=0)))>(2*pi/M)),
-cod=(2*pi/M)*floor((M-1e-12)*rand(1,numSimbolos));
+    cod=(2*pi/M)*floor((M-1e-12)*rand(1,numSimbolos));
 dCod=diff(cod);
 end
-%codigo=exp(j*cod);
-codigoP=repmat(cod,ns2,1);
+codigo=exp(j*cod);
+codigoP=repmat(codigo,ns2,1);
 display(size(codigoP))
 smpsk=reshape(codigoP,1,T_total);
 %%
 figure()
 plot(0:1:(length(smpsk)-1), smpsk)
 %%
-psk = zeros(1,1500);
-%%
-for i=1:T_total,
-    psk(i) = cos(2*pi*fo_k*i + smpsk(i));
-end
-%%
 bpsk = zeros(1,1500);
 %%
-for i=1:T_k,
-    bpsk(i) = cos(2*pi*fo_k*i + randsrc*pi);
+for i=1:T_total,
+    bpsk(i) = cos(2*pi*fo_k*i + smpsk(i)*pi);
 end
 %%
 figure()
@@ -59,11 +54,12 @@ plot(t,psk(1:T_k))
 %%
 display(psk(1:10))
 %%
-SCF_conj = get_SCF_comp_conj(bpsk, 32);
-
+SCF_conj = get_SCF_real(bpsk, 32);
+%%
+display(size(SCF_conj))
 %%
 alphas = 0:1/(length(SCF_conj)-1):1;
-freq = -0.5:1/63:0.5;
+freq = -0.5:1/32:0.5;
 disp(length(alphas))
 disp(length(SCF_conj))
 disp(length(freq))
@@ -71,7 +67,7 @@ disp(length(freq))
 length(SCF_comp)
 length(SCF_conj)
 %%
-plot_SCF(alphas, freq, SCF_conj)
+plot_SCF(alphas, freq, SCF_conj, 20, [1, 0])
 title('PSK compleja conjugada full')
 % plot_SCF(0:1:(length(SCF_comp)-1), 0:1:63, SCF_comp)
 % title('QPSK compleja')
@@ -101,28 +97,32 @@ while (length(find(dCod~=0))<2)||(min(diff(find(dCod~=0)))>1)||(min(abs(dCod(dCo
 cod=(2*pi/M)*floor((M-1e-12)*rand(1,numSimbolos));
 dCod=diff(cod);
 end
-%codigo=exp(j*cod);
 codigo = cod;
 codigoP=repmat(codigo,ns2,1);
 display(size(codigoP))
-smpsk=reshape(codigoP,1,T_total);
+smpsk_2=reshape(codigoP,1,T_total);
 
 %%
 figure()
-plot(1:1:T_total,smpsk)
+plot(1:1:T_total,smpsk_2)
 %%
 qpsk = zeros(1,1500);
-for i=1:T_total,
-    qpsk(i) = cos(2*pi*fo_k*i + randsrc*pi) + sin(2*pi*fo_k*i + randsrc*pi);
+for i=1:T_k,
+    qpsk(i) = cos(2*pi*fo_k*i + smpsk_2(i));
 end
 %%
-SCF_conj2 = get_SCF_comp_conj(qpsk, 32);
-% SCF_comp2 = get_SCF_comp(x2, 32);
+plot(1:1:T_k,qpsk)
+%%
+display(length(qpsk))
+%%
+SCF_conj2 = get_SCF_real(qpsk, 16);
+%%
+display(size(SCF_conj2))
 %%
 alphas = 0:1/(length(SCF_conj2)-1):1;
-freq = -0.5:1/63:0.5;
+freq = -0.5:1/16:0.5;
 %%
-plot_SCF(alphas, freq, SCF_conj2)
+plot_SCF(alphas, freq, SCF_conj2,20, [1, 0])
 title('QPSK compleja conjugada')
 
 %%
