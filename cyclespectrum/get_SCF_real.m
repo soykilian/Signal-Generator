@@ -11,7 +11,7 @@ a = a(:);
 a = a(end:-1:1)/sqrt(sum(abs(a).^2));
 
 P = floor((N-length(a))/L)+1;
-
+disp(P)
 %g = ones(P,1)/P;
 %g = sparse(diag(g));
 
@@ -28,6 +28,7 @@ gX_f = conj(X_f)/P;
 SCF = zeros((2-1/K)/2*P*L+1,K+1);
 
 df_da = P*L/K;
+disp(df_da)
 
 indices = mod([-df_da/2+1:df_da/2],P)+1;
 

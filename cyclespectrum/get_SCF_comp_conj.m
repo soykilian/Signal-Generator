@@ -1,4 +1,4 @@
-function [SCF] = get_SCF(x,K);
+function [SCF] = get_SCF_comp_conj(x,K);
 
 x = x(:);
 N = length(x);
@@ -11,7 +11,7 @@ a = a(:);
 a = a(end:-1:1)/sqrt(sum(abs(a).^2));
 
 P = floor((N-length(a))/L)+1;
-P = floor(P/4)*4;
+P = floor(P/8)*8;
 
 %g = ones(P,1)/P;
 %g = sparse(diag(g));
@@ -25,7 +25,6 @@ end
 X_f(:,:) = X_f.*exp(fftshift(((-j*pi*L/K)*[0:2*K-1].'))*[0:P-1]);
 
 gX_f = X_f([1,end:-1:2],:)/P;
-
 SCF = zeros((2-1/K)/2*P*L+1,2*K);
 
 df_da = P*L/K;

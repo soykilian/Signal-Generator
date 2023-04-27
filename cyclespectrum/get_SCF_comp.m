@@ -11,7 +11,7 @@ a = a(:);
 a = a(end:-1:1)/sqrt(sum(abs(a).^2));
 
 P = floor((N-length(a))/L)+1;
-P = floor(P/4)*4; % Múltiplo de 4
+P = floor(P/8)*8; % Múltiplo de 4
 M = P*L;
 
 %g = ones(P,1)/P;

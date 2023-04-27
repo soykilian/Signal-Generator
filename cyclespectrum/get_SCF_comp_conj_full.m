@@ -1,4 +1,4 @@
-function [SCF] = get_SCF(x,K);
+function [SCF] = get_SCF_conj_full(x,K);
 
 x = x(:);
 N = length(x);
@@ -29,7 +29,7 @@ end
 X_f(:,:) = X_f.*exp(fftshift(((-j*pi*L/K)*[0:2*K-1].'))*[0:P-1]);
 
 gX_f = X_f([1,end:-1:2],:)/P;
-
+(2-1/K)/2*P*L+1,2*K
 SCF = zeros((2-1/K)/2*P*L+1,2*K);
 
 df_da = P*L/K;
@@ -48,6 +48,7 @@ for ci=2:K
 		c_ind = (ci-3/2)*df_da+2:(ci-1/2)*df_da+1;
 		f_ind = fi+ci-1; 
 		SCF(c_ind,f_ind) = aux(indices);
+        %%% What does this do????
 		f_ind = mod(f_ind+K-1,2*K)+1;
 		c_ind = P*L-c_ind+2;
 		SCF(c_ind,f_ind) = conj(aux(indices));
