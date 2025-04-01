@@ -9,7 +9,7 @@
 function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc,Dfesc,vsFSK,Dffsk,nFSK,vsPSK,nPSK,pAl,cAl,cod,vsASK,vsQAM,Roff)
     
 
-    % Crea la carpeta para almacenar los vectores de señal resultantes
+    % Crea la carpeta para almacenar los vectores de seÃ±al resultantes
     %[status,msg,msgID] = mkdir(directorio);
 
     % Frecuencia de muestreo en MHz
@@ -51,7 +51,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
             
               tipoSig=rTipoSig(l); 
             
-            % Tipos de señal generados
+            % Tipos de seÃ±al generados
             % 1 - LFM
             % 2 - BFSK
             % 3 - BPSK
@@ -67,9 +67,9 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                     BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k;
                     %BWc_k=BWc(randsrc(1,1,[1:length(BWc)])); %Ancho de banda en MHz
                                        
-                    datosSig(k,i,4)=BWc_k; %Se almacena el ancho de banda de la señal LFM que se va a generar
+                    datosSig(k,i,4)=BWc_k; %Se almacena el ancho de banda de la seÃ±al LFM que se va a generar
                     
-                    T_k=round(T_k); %Duración del pulso en muestras %Ancho de banda normalizado de la fs
+                    T_k=round(T_k); %DuraciÃ³n del pulso en muestras %Ancho de banda normalizado de la fs
                     
                     pendiente_k=randsrc; %Se elije aleaotiamente pendiente ascendente(1) o descendente(-1)
 %                   pendiente_k=1;
@@ -94,7 +94,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                 case 2, % MFSK
                     nFSK_k = 1;
                     vs_k=vsFSK(randsrc(1,1,[1:length(vsFSK)]));
-                    ns_k=fs/vs_k; % Número de muestras por símbolo
+                    ns_k=fs/vs_k; % NÃºmero de muestras por sÃ­mbolo
                     Df_k=randsrc(1,1,[0.15 0.20 0.25 0.3]) * fo_k;
 %                   Df_k=Dffsk(randsrc(1,1,[1:length(Dffsk)]));
                     faseContinua=0;
@@ -108,7 +108,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                         ns_k = round(T_k/numSimbolos_k);
                     end
                     if errorC,
-                        disp('Error al generar el c�digo costas.')
+                        disp('Error al generar el código costas.')
                         return
                     end
                     [x,t,codigo,error]=m_fsk(1,fo_k,Df_k,ns_k,numSimbolos_k,pAl,cAl,codFSK,nFSK_k,T_k,1,faseContinua,[],0);
@@ -130,7 +130,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                 case 3, % MPSK
                     nPSK_k = nPSK;
                     vs_k=vsPSK(randsrc(1,1,[1:length(vsPSK)]));
-                    ns_k=fs/vs_k; % Número de muestras por símbolo
+                    ns_k=fs/vs_k; % NÃºmero de muestras por sÃ­mbolo
                     ns_k=round(ns_k);
                     numSimbolos_k=ceil(T_k/ns_k);
                     clas_Sig = 3;
@@ -143,7 +143,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                         numSimbolos_k = length(codPSK);
                         ns_k = round(T_k/numSimbolos_k);
                         if errorC,
-                            disp('Error al generar el c�digo radar.')
+                            disp('Error al generar el código radar.')
                             return
                         end
                     end
@@ -169,8 +169,8 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
                 case 5, % LFM esc
                    ns_k = randsrc(1,1,[4, 8]);
                    Tc_k = T_k/ns_k;
-                    %Duraci�n del pulso en muestras
-                   Tc_k=Tc_k; %Duraci�n del pulso en muestras
+                    %Duración del pulso en muestras
+                   Tc_k=Tc_k; %Duración del pulso en muestras
                    Tr = randsrc(1,1,[0.15, 0.20, 0.25, 0.30]);
                    BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k;
                    pendiente_k=randsrc(1,1,[1,-1]);
@@ -203,7 +203,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
 %                     subplot(3,1,1)
 %                     plot(t,x)
                 case 7, %%Exponential NLFM
-                    BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k; %Duración del pulso en muestras
+                    BWc_k=(BWc(1)+(BWc(2)-BWc(1))*rand(1))*fo_k; %DuraciÃ³n del pulso en muestras
                     [x,t,error]=nlfm(1,fo_k,[], BWc_k, pAl,T_k,1,0);
                     clas_Sig = 7;
 %                     subplot(2,1,1)
@@ -243,7 +243,7 @@ function [X, Y,lbl]=signal_generator(SNR,iteraciones,T,rTipoSig,BWc,T1_rel,Tcesc
           % Amplitud del ruido
            
            ampR = 1; % Amplitud fija de ruido
-           ampS=sqrt(2*snr_i*ampR^2); % Amplitud de se�al depende del ruido fijado y de la SNR  
+           ampS=sqrt(2*snr_i*ampR^2); % Amplitud de señal depende del ruido fijado y de la SNR  
                   
            r = ampR*(randn(1,length(x)) + 1j*randn(1,length(x))); %Ruido aleatorio gaussiano 
             
